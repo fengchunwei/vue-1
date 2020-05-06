@@ -17,12 +17,12 @@ export default {
     methods:{
       countChange(){
         console.log(this.$refs.numbox.value)
+        // this.$emit('getCount',parseInt(this.$refs.numbox.value));
        this.$store.commit('updataSelectCount',
         {
           id:this.goodsid,
           count:this.$refs.numbox.value
-        })
-        
+        })        
       }
     },
     props:['getCounts','goodsid'],

@@ -4,7 +4,7 @@
     <div class="mui-card"  v-for="(item,i) in getGoodsLists" :key='item.id'>
       <div class="mui-card-content">
         <div class="mui-card-content-inner myclass">
-          <mt-switch v-model="$store.getters.getGoodsSelected"></mt-switch>
+          <mt-switch v-model="$store.getters.getGoodsSelected[item.id]" @change="selectedChange(item.id,$store.getters.getGoodsSelected[item.id])"></mt-switch>
           <img src="https://www.baidu.com/img/bd_logo1.png" alt />
           <div class="carCon">
             <h4>{{item.title}}</h4>
@@ -32,7 +32,7 @@
               <span>总价:￥{{$store.getters.getAllCountANDAmount.n}}</span>
             </div>
             <mt-button type="danger">去结算</mt-button>
-            <p>{{$store.getters.getGoodsSelected}}</p>
+            <!-- <p>{{$store.getters.getGoodsSelected}}</p> -->
           </div>
         </div>
       </div>
@@ -50,7 +50,7 @@ export default {
   created() {
     this.getGoodsList();
   },
-
+  // 最后拿出来的结果{id:count}  {88:4}  store的car中都有
   methods: {
     getGoodsList() {
       var isArr = [];
@@ -58,11 +58,17 @@ export default {
         isArr.push(item.id);
       });
 
+      console.log(isArr); //[87]
+
       this.$http.get("http://yapi.shangyuninfo.com/mock/121/api/shopcarlist/" + isArr.join(','))
       .then(res=>{
           console.log(res.body.message)
           this.getGoodsLists = res.body.message
         })
+    },
+    selectedChange(id,val){
+        console.log(id+'-----'+val);
+        this.$store.commit('upadateGoodsSelected',{id,selected:val})
     },
     // id:store中的数据   index指的是获取到的数据
     del(id,index){
@@ -76,6 +82,10 @@ export default {
 };
 </script>
 <style scoped>
+.shopcarContainer {
+ 
+  padding-bottom: 50px;
+}
 .myclass {
   display: flex;
   align-items: center;

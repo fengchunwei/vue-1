@@ -57,11 +57,20 @@ const store = new Vuex.Store({
        updataSelectCount(state,goodsinfo){
         state.car.some(item=>{
             if(item.id===goodsinfo.id){
-                item.count+=parseInt(goodsinfo.count)
+                item.count = parseInt(goodsinfo.count)
                 return true
             }
         })
         localStorage.setItem('car',JSON.stringify(state.car))
+        },
+        // 根据开关更新状态 info(id,selected:true)
+        upadateGoodsSelected(state,info){
+            state.car.some(item=>{
+                if(item.id===info.id){
+                    item.selected = info.selected
+                }
+            })
+            localStorage.setItem('car',JSON.stringify(state.car))
         },
         remove(state,id){
            state.car.some((item,i)=>{
@@ -91,13 +100,14 @@ const store = new Vuex.Store({
             })
             return x
         },
-        // getGoodsSelected(state){
-        //     var y = {}
-        //     state.car.forEach(item=>{
-        //         y[item.id] = item.selected
-        //     })
-        //     return y
-        // }
+        // {88:selected}
+        getGoodsSelected(state){
+            var y = {}
+            state.car.forEach(item=>{
+                y[item.id] = item.selected
+            })
+            return y
+        },
         // 获取商品的总数量以及总价格
         getAllCountANDAmount(state){
             var obj ={
@@ -106,8 +116,10 @@ const store = new Vuex.Store({
             }
            
         state.car.forEach(item=>{
-            obj.m+=item.count,
-            obj.n+=item.price*item.count
+            if(item.selected){
+                obj.m+=item.count,
+                obj.n+=item.price*item.count
+            }           
         })
         return obj
         }
